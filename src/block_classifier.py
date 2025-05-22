@@ -2,9 +2,10 @@ from block_type import BlockType
 
 def block_to_block_type(block):
     lines = block.split("\n")
+    stripped_block = block.strip()  # use a local variable here
 
     # Code block: starts and ends with triple backticks
-    if block.startswith("```") and block.endswith("```"):
+    if stripped_block.startswith("```") and stripped_block.endswith("```"):
         return BlockType.CODE
 
     # Heading: 1-6 '#' followed by a space
