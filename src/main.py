@@ -44,9 +44,29 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, "w", encoding="utf-8") as f:
         f.write(result)
 
+def generate_pages_recursive(dir_path_content: str, template_path: str, dest_dir_path: str) -> None:
+    """
+    Walk through every file under `dir_path_content`.  
+    For each *.md file, call `generate_page()` and write a matching *.html*
+    file inside `dest_dir_path`, preserving the sub-folder structure.
+    """
+    for root, _dirs, files in os.walk(dir_path_content):
+        for filename in files:
+            if not filename.lower().endswith(".md"):
+                continue
+
+            from_path = os.path.join(root, filename)                    # content/blog/post.md
+            rel_path  = os.path.relpath(from_path, dir_path_content)    # blog/post.md
+            dest_path = os.path.join(dest_dir_path,
+                                     os.path.splitext(rel_path)[0] + ".html")
+
+            generate_page(from_path, template_path, dest_path)
+
 def main():
     copy_static("static", "public")
-    generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive("content", "template.html", "public")
+
 
 if __name__ == "__main__":
     main()
+
